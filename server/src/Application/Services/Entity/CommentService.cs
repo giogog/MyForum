@@ -131,9 +131,10 @@ namespace Application.Services
         public async Task<PagedList<CommentDto>> GetCommentByPage(int page, int topicId)
         {
             _logger.LogInformation("Getting comments for Topic {TopicId}, page {Page}", topicId, page);
+            
             var comments = _repositoryManager.CommentRepository.Comments()
+                .AsNoTracking() // Read-only query optimization
                 .Where(c => c.TopicId == topicId)
-                .Include(c => c.User)
                 .Select(c => new CommentDto
                 {
                     Body = c.Body,
@@ -152,10 +153,11 @@ namespace Application.Services
 
         public async Task<IEnumerable<CommentDto>> GetAllComment(int topicId)
         {
-            _logger.LogInformation($"Getting comments for Topic {topicId}");
+            _logger.LogInformation("Getting all comments for Topic {TopicId}", topicId);
+            
             var comments = await _repositoryManager.CommentRepository.Comments()
+                .AsNoTracking() // Read-only query optimization
                 .Where(c => c.TopicId == topicId)
-                .Include(c => c.User)
                 .Select(c => new CommentDto
                 {
                     Body = c.Body,
@@ -167,13 +169,13 @@ namespace Application.Services
                     Username = c.User.UserName,
                     AuthorFullName = $"{c.User.Name} {c.User.Surname}"
                 })
-                .OrderByDescending(c => c.Created).ToListAsync();
+                .OrderByDescending(c => c.Created)
+                .ToListAsync();
+                
             if (!comments.Any())
                 throw new NotFoundException("Comments on this topic not found");
 
             return comments;
-
-
         }
     }
 }

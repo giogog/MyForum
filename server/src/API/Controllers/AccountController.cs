@@ -5,9 +5,21 @@ using System.Net;
 
 namespace API.Controllers;
 
+/// <summary>
+/// Handles user authentication and account management
+/// </summary>
 public class AccountController(IServiceManager _serviceManager) : ApiController(_serviceManager)
 {
+    /// <summary>
+    /// Register a new user account
+    /// </summary>
+    /// <param name="registerDto">Registration information</param>
+    /// <returns>Registration status and confirmation email notification</returns>
+    /// <response code="201">User registered successfully, confirmation email sent</response>
+    /// <response code="400">Invalid registration data or user already exists</response>
     [HttpPost("register")]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Register(RegisterDto registerDto)
     {
         var registrationCheckUp = await _serviceManager.AuthorizationService.Register(registerDto);
@@ -29,9 +41,16 @@ public class AccountController(IServiceManager _serviceManager) : ApiController(
         _response = new ApiResponse("Registration successful. Please check your email to confirm your account.", true, null, Convert.ToInt32(HttpStatusCode.Created));
         return StatusCode(_response.StatusCode, _response);
     }
-
-
+    /// <summary>
+    /// Authenticate user and receive JWT token
+    /// </summary>
+    /// <param name="loginDto">Login credentials</param>
+    /// <returns>JWT token for authenticated requests</returns>
+    /// <response code="200">Login successful, returns JWT token</response>
+    /// <response code="400">Invalid credentials or email not confirmed</response>
     [HttpPost("login")]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     public async Task<IActionResult> Login(LoginDto loginDto)
     {
         var loginCheckUp = await _serviceManager.AuthorizationService.Login(loginDto);
@@ -49,7 +68,15 @@ public class AccountController(IServiceManager _serviceManager) : ApiController(
         return StatusCode(_response.StatusCode, _response);
     }
 
+    /// <summary>
+    /// Confirm user email address via token
+    /// </summary>
+    /// <param name="userId">User identifier</param>
+    /// <param name="token">Email confirmation token</param>
+    /// <returns>Redirect to login or error page</returns>
+    /// <response code="302">Redirects to appropriate page based on confirmation result</response>
     [HttpGet("confirm-email")]
+    [ProducesResponseType(StatusCodes.Status302Found)]
     public async Task<IActionResult> ConfirmEmail(int userId, string token)
     {
         var result = await _serviceManager.EmailService.ConfirmEmailAsync(userId.ToString(), token);

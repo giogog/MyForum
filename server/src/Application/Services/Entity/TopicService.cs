@@ -28,9 +28,8 @@ namespace Application.Services
             _logger.LogInformation("Fetching all topics for page {Page}", page);
 
             var topicDtos = _repositoryManager.TopicRepository.Topics()
+                .AsNoTracking() // Read-only query optimization
                 .Where(t=>t.State != State.Pending)
-                .Include(t => t.User)
-                .Include(t => t.Upvotes)
                 .Select(t => new TopicDto
                 {
                     Title = t.Title,
@@ -44,21 +43,19 @@ namespace Application.Services
                     Id = t.Id,
                     Status = t.Status,
                     State = t.State
-
                 })
-                .OrderByDescending(t => t.Status == Status.Active);
+                .OrderByDescending(t => t.Status)
+                .ThenByDescending(t => t.Created);
 
             return await PagedList<TopicDto>.CreateAsync(topicDtos, page, _pageSize);
         }
         public async Task<PagedList<TopicDto>> GetForumTopicsByPage(int forumId, int page)
         {
-            _logger.LogInformation("Fetching topics for page {Page}", page);
+            _logger.LogInformation("Fetching topics for forum {ForumId}, page {Page}", forumId, page);
 
             var topicDtos = _repositoryManager.TopicRepository.Topics()
+                .AsNoTracking() // Read-only query optimization
                 .Where(t => t.ForumId == forumId && t.State == State.Show)
-                .Include(t => t.Comments)
-                .Include(t => t.User)
-                .Include(t => t.Upvotes)
                 .Select(t => new TopicDto
                 {
                     Title = t.Title,
@@ -73,21 +70,19 @@ namespace Application.Services
                     Id = t.Id,
                     Status = t.Status,
                     State = t.State
-
                 })
-                .OrderByDescending(t => t.Status == Status.Active);
+                .OrderByDescending(t => t.Status)
+                .ThenByDescending(t => t.Created);
 
             return await PagedList<TopicDto>.CreateAsync(topicDtos, page, _pageSize);
         }
         public async Task<PagedList<TopicDto>> GetTopicsWithUserIdByPage(int userId,int page)
         {
-            _logger.LogInformation("Fetching pending topics for page {Page}", page);
+            _logger.LogInformation("Fetching topics for user {UserId}, page {Page}", userId, page);
 
             var topicDtos = _repositoryManager.TopicRepository.Topics()
+                .AsNoTracking() // Read-only query optimization
                 .Where(t => t.UserId == userId)
-                .Include(t => t.Forum)
-                .Include(t => t.User)
-                .Include(t => t.Upvotes)
                 .Select(t => new TopicDto
                 {
                     Title = t.Title,
@@ -103,7 +98,8 @@ namespace Application.Services
                     Status = t.Status,
                     State = t.State
                 })
-                .OrderByDescending(t => t.Status == Status.Active);
+                .OrderByDescending(t => t.Status)
+                .ThenByDescending(t => t.Created);
 
             return await PagedList<TopicDto>.CreateAsync(topicDtos, page, _pageSize);
         }
@@ -112,9 +108,8 @@ namespace Application.Services
             _logger.LogInformation("Fetching pending topics for page {Page}", page);
 
             var topicDtos = _repositoryManager.TopicRepository.Topics()
+                .AsNoTracking() // Read-only query optimization
                 .Where(t => t.State == State.Pending)
-                .Include(t => t.Forum)
-                .Include(t => t.User)
                 .Select(t => new TopicDto
                 {
                     Title = t.Title,
@@ -129,7 +124,7 @@ namespace Application.Services
                     Status = t.Status,
                     State = t.State
                 })
-                .OrderByDescending(t => t.Status == Status.Active);
+                .OrderByDescending(t => t.Created);
 
             return await PagedList<TopicDto>.CreateAsync(topicDtos, page, _pageSize);
         }

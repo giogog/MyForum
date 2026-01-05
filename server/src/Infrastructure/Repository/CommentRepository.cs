@@ -10,19 +10,22 @@ public class CommentRepository(ApplicationDataContext context) : BaseRepository<
     public async Task AddCommentAsync(Comment comment) => Create(comment);
 
     public async Task DeleteCommentAsync(Comment comment) => Delete(comment);
+    
     public async Task UpdateCommentAsync(Comment comment) => Update(comment);
 
     public async Task<Comment> GetCommentByIdAsync(int id) => 
-        await FindByCondition(c => c.Id == id).FirstOrDefaultAsync();
+        await FindByCondition(c => c.Id == id)
+            .SingleOrDefaultAsync(); // Don't use AsNoTracking - may be used for updates
 
     public async Task<IEnumerable<Comment>> GetCommentsByTopicIdAsync(int topicId) => 
         await FindByCondition(c => c.TopicId == topicId)
-        .ToArrayAsync();
+            .AsNoTracking() // Read-only query
+            .ToArrayAsync();
 
     public async Task<IEnumerable<Comment>> GetCommentsByUserIdAsync(int userId) => 
-        await FindByCondition(c => c.UserId == userId).ToArrayAsync();
+        await FindByCondition(c => c.UserId == userId)
+            .AsNoTracking() // Read-only query
+            .ToArrayAsync();
 
     public IQueryable<Comment> Comments() => FindAll();
-
-
 }

@@ -58,7 +58,8 @@ public class TokenGenerator : ITokenGenerator
             Audience = _jwtOptions.Audience,
             Issuer = _jwtOptions.Issuer,
             Subject = new ClaimsIdentity(claims),
-            Expires = DateTime.Now.AddDays(7),
+            Expires = DateTime.UtcNow.AddDays(7), // Use UTC for consistency
+            NotBefore = DateTime.UtcNow, // Token valid from now
             SigningCredentials = creds
         };
         var tokenHandler = new JwtSecurityTokenHandler();

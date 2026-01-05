@@ -19,29 +19,35 @@ public class EmailSender : IEmailSender
     {
         try
         {
-            var client = new SmtpClient(_emailSettings.MailServer, _emailSettings.MailPort)
+            using var client = new SmtpClient(_emailSettings.MailServer, _emailSettings.MailPort)
             {
                 EnableSsl = true,
                 UseDefaultCredentials = false,
-                Credentials = new NetworkCredential(_emailSettings.FromEmail, _emailSettings.Password)
+                Credentials = new NetworkCredential(_emailSettings.FromEmail, _emailSettings.Password),
+                Timeout = 30000 // 30 second timeout
             };
 
-            var mailMessage = new MailMessage
+            using var mailMessage = new MailMessage
             {
                 From = new MailAddress(_emailSettings.FromEmail, _emailSettings.SenderName),
                 Subject = subject,
                 Body = htmlMessage,
                 IsBodyHtml = true,
+                Priority = MailPriority.Normal
             };
             mailMessage.To.Add(email);
 
-            await client.SendMailAsync(mailMessage);
+            await client.SendMailAsync(mailMessage).ConfigureAwait(false);
 
             return new EmailResult { IsSuccess = true };
         }
+        catch (SmtpException smtpEx)
+        {
+            return new EmailResult { IsSuccess = false, ErrorMessage = $"SMTP Error: {smtpEx.Message}" };
+        }
         catch (Exception ex)
         {
-            return new EmailResult { IsSuccess = false, ErrorMessage = ex.Message };
+            return new EmailResult { IsSuccess = false, ErrorMessage = $"Email sending failed: {ex.Message}" };
         }
     }
 }

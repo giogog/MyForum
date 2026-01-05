@@ -1,13 +1,26 @@
 using API.Extensions;
+using API.Filters;
+using API.Middleware;
 using Serilog;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 Log.Logger = new LoggerConfiguration()
     .ReadFrom.Configuration(builder.Configuration)
     .CreateLogger();
-// Add services to the container.
 
-builder.Services.AddControllers();
+// Add services to the container.
+builder.Services.AddControllers(options =>
+{
+    // Add global model validation filter
+    options.Filters.Add<ValidateModelAttribute>();
+})
+.ConfigureApiBehaviorOptions(options =>
+{
+    // Suppress default model state invalid filter since we have custom one
+    options.SuppressModelStateInvalidFilter = true;
+});
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
 // Custom configurations
@@ -34,6 +47,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
+
+// Rate limiting for demonstration - protects against brute force
+app.UseMiddleware<RateLimitingMiddleware>();
 
 app.UseHttpsRedirection();
 

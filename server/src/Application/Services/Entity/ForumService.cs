@@ -26,9 +26,8 @@ public class ForumService:IForumService
     public async Task<PagedList<ForumDto>> GetPendingForums(int page)
     {
         var forums = _repositoryManager.ForumRepository.Forums()
+            .AsNoTracking() // Read-only query optimization
             .Where(f => f.State == State.Pending)
-            .Include(f => f.Topics)
-            .Include(f => f.User)
             .Select(f => new ForumDto
             {
                 Id = f.Id,
@@ -47,9 +46,8 @@ public class ForumService:IForumService
     public async Task<PagedList<ForumDto>> GetDeletedForums(int page)
     {
         var forums = _repositoryManager.ForumRepository.Forums()
+            .AsNoTracking() // Read-only query optimization
             .Where(f => f.Status == Status.Deleted)
-            .Include(f => f.Topics)
-            .Include(f => f.User)
             .Select(f => new ForumDto
             {
                 Id = f.Id,
@@ -69,9 +67,8 @@ public class ForumService:IForumService
     public async Task<PagedList<ForumDto>> GetAllForumsByPage(int page)
     {
         var forums = _repositoryManager.ForumRepository.Forums()
+            .AsNoTracking() // Read-only query optimization
             .Where(t => t.State != State.Pending)
-            .Include(f => f.Topics)
-            .Include(f => f.User)
             .Select(f => new ForumDto
             {
                 Id = f.Id,
@@ -91,9 +88,8 @@ public class ForumService:IForumService
     public async Task<PagedList<ForumDto>> GetForumsByPage(int page)
     {
         var forums = _repositoryManager.ForumRepository.Forums()
+            .AsNoTracking() // Read-only query optimization
             .Where(f=>f.State == State.Show && f.Status != Status.Deleted)
-            .Include(f => f.Topics)
-            .Include(f => f.User)
             .Select(f => new ForumDto
             {
                 Id = f.Id,

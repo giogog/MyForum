@@ -90,6 +90,25 @@ namespace API.Extensions
         {
             builder.Services.AddSwaggerGen(options =>
             {
+                options.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "Forum API",
+                    Version = "v1",
+                    Description = "A professional forum API with authentication, authorization, and comprehensive features",
+                    Contact = new OpenApiContact
+                    {
+                        Name = "Forum API Support",
+                        Email = "support@forumapi.com"
+                    }
+                });
+
+                // Enable XML comments for better Swagger documentation
+                var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                if (File.Exists(xmlPath))
+                {
+                    options.IncludeXmlComments(xmlPath);
+                }
 
                 options.AddSecurityDefinition(name: JwtBearerDefaults.AuthenticationScheme, securityScheme: new OpenApiSecurityScheme
                 {
@@ -97,7 +116,8 @@ namespace API.Extensions
                     Description = "Enter the Bearer Authorization string example: `Bearer Generated-JWT-Token`",
                     In = ParameterLocation.Header,
                     Type = SecuritySchemeType.ApiKey,
-                    Scheme = JwtBearerDefaults.AuthenticationScheme
+                    Scheme = JwtBearerDefaults.AuthenticationScheme,
+                    BearerFormat = "JWT"
                 });
 
                 options.AddSecurityRequirement(
@@ -116,6 +136,8 @@ namespace API.Extensions
                     }
                 });
 
+                // Add custom operation filters for better documentation
+                options.CustomSchemaIds(type => type.FullName);
             });
         }
 

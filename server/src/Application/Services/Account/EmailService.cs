@@ -51,9 +51,11 @@ public class EmailService : IEmailService
             return new EmailResult { IsSuccess = false, ErrorMessage = "Callback URL generation failed." };
         }
 
-        // Send the confirmation email
-        return await _emailSender.SendEmailAsync(user.Email, "Confirm your email",
-            $"Please confirm your account by <a href='{callbackUrl}'>clicking here</a>.");
+        // Send the confirmation email with HTML encoding for security
+        var htmlMessage = $"<p>Please confirm your account by <a href='{System.Net.WebUtility.HtmlEncode(callbackUrl)}'>clicking here</a>.</p>" +
+            $"<p>If you did not create an account, please ignore this email.</p>";
+        
+        return await _emailSender.SendEmailAsync(user.Email, "Confirm your email", htmlMessage);
     }
 
 
@@ -91,8 +93,11 @@ public class EmailService : IEmailService
             return new EmailResult { IsSuccess = false, ErrorMessage = "Callback URL generation failed." };
         }
 
-        return await _emailSender.SendEmailAsync(email, "Reset Password",
-      $"Please Reset your password <a href='{callbackUrl}'>clicking here</a>.");
+        var htmlMessage = $"<p>You requested a password reset. Please reset your password by <a href='{System.Net.WebUtility.HtmlEncode(callbackUrl)}'>clicking here</a>.</p>" +
+            $"<p>This link will expire in 24 hours.</p>" +
+            $"<p>If you did not request a password reset, please ignore this email and your password will remain unchanged.</p>";
+        
+        return await _emailSender.SendEmailAsync(email, "Reset Password", htmlMessage);
     }
 
     // Method to confirm the user's email

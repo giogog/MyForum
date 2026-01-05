@@ -12,8 +12,14 @@ public class ForumRepository(ApplicationDataContext dataContext) : BaseRepositor
     public async Task DeleteForumAsync(Forum forum) => Delete(forum);
 
     public IQueryable<Forum> Forums() => FindAll();
-    public async Task<IEnumerable<Forum>> GetForums() => await FindAll().ToArrayAsync();
-    public async Task<Forum> GetForumByIdAsync(int id) => await FindByCondition(f=>f.Id==id).FirstOrDefaultAsync();
+    
+    public async Task<IEnumerable<Forum>> GetForums() => 
+        await FindAll().AsNoTracking().ToArrayAsync();
+    
+    public async Task<Forum> GetForumByIdAsync(int id) => 
+        await FindByCondition(f=>f.Id==id)
+            .AsNoTracking() // Read-only - use when just reading
+            .SingleOrDefaultAsync(); // Use Single for better performance on unique lookups
 
     public async Task UpdateForumAsync(Forum forum) => Update(forum);
 }

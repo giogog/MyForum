@@ -28,18 +28,32 @@ namespace Application.Services
         public async Task<PagedList<AuthorizedUserDto>> GetUsers(int page)
         {
             var users = _repositoryManager.UserRepository.Users()
-                .Where(u => !u.Roles.Where(r => r.RoleId == -2).Any())
-                .Include(ur=>ur.Roles)
-                .ThenInclude(ur=>ur.Role)
-                .Select(t => new AuthorizedUserDto(t.Id,t.Name, t.Surname, t.UserName,t.Email,t.Banned,t.Roles.Select(r=>r.Role.Name).ToArray()));
+                .AsNoTracking() // Read-only query optimization
+                .Where(u => !u.Roles.Any(r => r.RoleId == -2))
+                .Select(t => new AuthorizedUserDto(
+                    t.Id,
+                    t.Name, 
+                    t.Surname, 
+                    t.UserName,
+                    t.Email,
+                    t.Banned,
+                    t.Roles.Select(r=>r.Role.Name).ToArray()));
 
             return await PagedList<AuthorizedUserDto>.CreateAsync(users,page, _pageSize);
         }
 
         public async Task<IEnumerable<string>> GetUserRoles(int userId)
         {
-            var user = await _repositoryManager.UserRepository.Users().Where(u=>u.Id==userId).Include(u => u.Roles).ThenInclude(r=>r.Role).FirstOrDefaultAsync();
-            return user.Roles.Select(ur=>ur.Role).Select(r=> r.Name).ToList();
+            var user = await _repositoryManager.UserRepository.Users()
+                .AsNoTracking() // Read-only query optimization
+                .Where(u=>u.Id==userId)
+                .Select(u => new 
+                {
+                    Roles = u.Roles.Select(ur => ur.Role.Name).ToArray()
+                })
+                .SingleOrDefaultAsync();
+                
+            return user?.Roles ?? Array.Empty<string>();
         }
 
         public async Task<AuthorizedUserDto> GetAuthorizedUserData(int id)
@@ -123,7 +137,11 @@ namespace Application.Services
             try
             {
                 var userRole = await _repositoryManager.UserRepository.FindUserRolebyName(role);
-                var user = await _repositoryManager.UserRepository.Users().Where(u=>u.Id==userId).Include(u=>u.Roles).ThenInclude(u=>u.Role).FirstOrDefaultAsync();
+                var user = await _repositoryManager.UserRepository.Users()
+                    .Where(u=>u.Id==userId)
+                    .Include(u=>u.Roles)
+                        .ThenInclude(u=>u.Role)
+                    .SingleOrDefaultAsync(); // Use SingleOrDefault for unique lookup
                 
                 if (user == null)
                 {
@@ -132,8 +150,8 @@ namespace Application.Services
                 }
                 if(userRole == null)
                 {
-                    _logger.LogWarning("Role not found with ID {role}", role);
-                    throw new NotFoundException("User not found");
+                    _logger.LogWarning("Role not found with name {Role}", role);
+                    throw new NotFoundException("Role not found");
                 }
                 if (user.Roles.Any(u => u.Role == userRole))
                 {
@@ -164,7 +182,7 @@ namespace Application.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while changing ban status for user with ID {UserId}", userId);
+                _logger.LogError(ex, "Error occurred while changing moderator status for user with ID {UserId}", userId);
                 await _repositoryManager.RollbackTransactionAsync();
                 throw;
             }
@@ -174,7 +192,10 @@ namespace Application.Services
             await _repositoryManager.BeginTransactionAsync();
             try
             {
-                var user = await _repositoryManager.UserRepository.Users().Where(u => u.Id == userId && !u.Roles.Where(r=>r.RoleId == -2).Any()).FirstOrDefaultAsync();
+                var user = await _repositoryManager.UserRepository.Users()
+                    .Where(u => u.Id == userId && !u.Roles.Any(r=>r.RoleId == -2))
+                    .SingleOrDefaultAsync(); // Use SingleOrDefault for unique lookup
+                    
                 if (user == null)
                 {
                     _logger.LogWarning("User not found with ID {UserId}", userId);

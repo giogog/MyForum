@@ -6,10 +6,24 @@ using System.Net;
 
 namespace API.Controllers;
 
+/// <summary>
+/// Manages forum operations including CRUD and moderation
+/// </summary>
 public class ForumController(IServiceManager _serviceManager) : ApiController(_serviceManager)
 {
+    /// <summary>
+    /// Get all forums with pagination (Admin only)
+    /// </summary>
+    /// <param name="page">Page number</param>
+    /// <returns>Paginated list of all forums</returns>
+    /// <response code="200">Returns paginated forums</response>
+    /// <response code="401">Unauthorized - authentication required</response>
+    /// <response code="403">Forbidden - admin role required</response>
     [Authorize(Roles = "Admin")]
     [HttpGet("{page}")]
+    [ProducesResponseType(typeof(PaginatedApiResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<IActionResult> GetAllForums(int page)
     {
         var forums = await _serviceManager.ForumService.GetAllForumsByPage(page);
@@ -45,9 +59,19 @@ public class ForumController(IServiceManager _serviceManager) : ApiController(_s
         return StatusCode(_response.StatusCode, _response);
     }
 
-
+    /// <summary>
+    /// Create a new forum (Authenticated users)
+    /// </summary>
+    /// <param name="createForumDto">Forum creation data</param>
+    /// <returns>Forum creation status</returns>
+    /// <response code="201">Forum created successfully</response>
+    /// <response code="400">Invalid forum data</response>
+    /// <response code="401">Unauthorized - authentication required</response>
     [Authorize]
     [HttpPost("create")]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status201Created)]
+    [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<IActionResult> CreateForum([FromBody] CreateForumDto createForumDto)
     {
         var user = await _serviceManager.UserService.GetUserWithClaim(User);
