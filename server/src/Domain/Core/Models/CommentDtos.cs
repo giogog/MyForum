@@ -10,12 +10,11 @@ public record CommentDto
     public int Id { get; init; }
     public int UserId { get; init; }
     public int? ParentCommentId { get; init; }
-    public string Body { get; set; }
-    public string AuthorFullName { get; set; }
+    public string Body { get; init; } = string.Empty;
+    public string AuthorFullName { get; init; } = string.Empty;
     public DateTime Created { get; init; }
-    public string Username { get; set; }
+    public string Username { get; init; } = string.Empty;
     public CommentType Type { get; set; }
-    public CommentDto() { }
 }
 
 /// <summary>

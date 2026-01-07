@@ -25,7 +25,7 @@ builder.Services.AddControllers(options =>
 
 // Custom configurations
 builder.Services.ConfigureCors();
-builder.Services.ConfigureSqlServer(builder.Configuration);
+builder.Services.ConfigurePostgreSql(builder.Configuration);
 builder.ConfigureJwtOptions();
 builder.Services.GeneralConfiguration(builder.Configuration);
 builder.Services.ConfigureAutomapper();

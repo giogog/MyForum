@@ -11,6 +11,16 @@ public class ForumConfiguration : IEntityTypeConfiguration<Forum>
         builder.ToTable(nameof(Forum));
         builder.HasKey(t => t.Id);
 
+        builder.Property(f => f.Title)
+            .IsRequired()
+            .HasMaxLength(200);
+
+        builder.Property(f => f.Created)
+            .IsRequired();
+
+        builder.HasIndex(f => f.Created);
+        builder.HasIndex(f => f.UserId);
+
         builder.HasMany(f=>f.Topics)
             .WithOne(t=>t.Forum)
             .HasForeignKey(t => t.ForumId)

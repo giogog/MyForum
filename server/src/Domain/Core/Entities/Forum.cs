@@ -9,9 +9,10 @@ public class Forum
     public int Id { get; set; }
 
     [Required]
-    [StringLength(20, ErrorMessage = "Forum must be simplier.")]
-    public string Title { get; set; }
-    public DateTime Created { get; set; } = DateTime.Now;
+    [StringLength(200, MinimumLength = 3, ErrorMessage = "Forum title must be between 3 and 200 characters.")]
+    public string Title { get; set; } = null!;
+
+    public DateTime Created { get; set; } = DateTime.UtcNow;
 
     public int TopicNum => Topics?.Count ?? 0;
 
@@ -21,11 +22,11 @@ public class Forum
     [EnumDataType(typeof(Status))]
     public Status Status { get; set; } = Status.Active;
 
-    public ICollection<Topic>? Topics { get; set; }
+    public ICollection<Topic> Topics { get; set; } = new List<Topic>();
     [Required]
     public int UserId { get; set; }
     [ForeignKey("UserId")]
-    public User User { get; set; }
+    public User User { get; set; } = null!;
 
 
 }

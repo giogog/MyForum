@@ -18,9 +18,9 @@ namespace API.Extensions
 {
     public static class ServiceExtension
     {
-        public static void ConfigureSqlServer(this IServiceCollection services, IConfiguration configuration) =>
+        public static void ConfigurePostgreSql(this IServiceCollection services, IConfiguration configuration) =>
             services.AddDbContext<ApplicationDataContext>(options =>
-                options.UseSqlServer(configuration.GetConnectionString("DefaultConnection"), options =>
+                options.UseNpgsql(configuration.GetConnectionString("DefaultConnection"), options =>
                 {
                     options.MigrationsAssembly("API");
                 }));

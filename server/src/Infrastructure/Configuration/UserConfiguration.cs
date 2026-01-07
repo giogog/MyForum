@@ -33,7 +33,7 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .OnDelete(DeleteBehavior.Restrict)
             .IsRequired();
         builder.HasMany(u => u.Upvotes)
-            .WithOne()
+            .WithOne(u => u.User)
             .HasForeignKey(t => t.UserId)
             .OnDelete(DeleteBehavior.Restrict)
             .IsRequired();

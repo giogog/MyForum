@@ -9,13 +9,12 @@ public record ForumDto
 {
     public int Id { get; init; }
     public int UserId { get; init; }
-    public string Title { get; init; }
+    public string Title { get; init; } = string.Empty;
     public int TopicNum { get; init; }
     public DateTime Created { get; init; }
-    public string Username { get; init; }
+    public string Username { get; init; } = string.Empty;
     public State State { get; init; }
     public Status Status { get; init; }
-    public ForumDto() { }
 }
 
 /// <summary>

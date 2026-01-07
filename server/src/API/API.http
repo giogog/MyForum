@@ -1,6 +1,282 @@
-@API_HostAddress = http://localhost:5104
+@API_HostAddress = https://localhost:5001
+@token = your-jwt-token-here
 
-GET {{API_HostAddress}}/weatherforecast/
+##################################################
+# ACCOUNT CONTROLLER
+##################################################
+
+### Register new user
+POST {{API_HostAddress}}/api/account/register
+Content-Type: application/json
+
+{
+  "username": "newuser",
+  "email": "newuser@example.com",
+  "password": "NewUser123!",
+  "name": "New",
+  "surname": "User"
+}
+
+### Login as Admin
+POST {{API_HostAddress}}/api/account/login
+Content-Type: application/json
+
+{
+  "username": "admin",
+  "password": "Admin123"
+}
+
+### Login as User1
+POST {{API_HostAddress}}/api/account/login
+Content-Type: application/json
+
+{
+  "username": "User1",
+  "password": "!Ab123123"
+}
+
+### Confirm Email (GET request with query parameters)
+GET {{API_HostAddress}}/api/account/confirm-email?userId=1&token=sample-token
 Accept: application/json
+
+### Resend Confirmation Email
+POST {{API_HostAddress}}/api/account/resend-confirmation/User1
+
+### Request Password Reset
+POST {{API_HostAddress}}/api/account/request-password-reset/user1@gmail.com
+
+### Reset Password Page (Redirect)
+GET {{API_HostAddress}}/api/account/reset-password-page?token=sample-token&email=user1@gmail.com
+
+### Reset Password
+PUT {{API_HostAddress}}/api/account/reset-password
+Content-Type: application/json
+
+{
+  "email": "user1@gmail.com",
+  "token": "sample-token",
+  "newPassword": "NewPassword123!"
+}
+
+##################################################
+# FORUM CONTROLLER
+##################################################
+
+### Get All Forums (Admin only) - Page 1
+GET {{API_HostAddress}}/api/forum/1
+Authorization: Bearer {{token}}
+
+### Get Pending Forums (Admin only) - Page 1
+GET {{API_HostAddress}}/api/forum/pending/1
+Authorization: Bearer {{token}}
+
+### Get Deleted Forums (Admin only) - Page 1
+GET {{API_HostAddress}}/api/forum/deleted/1
+Authorization: Bearer {{token}}
+
+### Get Forums (Public) - Page 1
+GET {{API_HostAddress}}/api/forum/forums/1
+
+### Create Forum (Authenticated)
+POST {{API_HostAddress}}/api/forum/create
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "title": "My New Forum"
+}
+
+### Delete Forum (Admin only)
+DELETE {{API_HostAddress}}/api/forum/delete/1
+Authorization: Bearer {{token}}
+
+### Delete Forum from User (Soft delete)
+PATCH {{API_HostAddress}}/api/forum/delete-from-user/1
+Authorization: Bearer {{token}}
+
+### Update Forum
+PUT {{API_HostAddress}}/api/forum/update/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "title": "Updated Forum Title"
+}
+
+### Change Forum State (Admin only)
+PATCH {{API_HostAddress}}/api/forum/state/1/1
+Authorization: Bearer {{token}}
+
+### Change Forum Status (Admin only)
+PATCH {{API_HostAddress}}/api/forum/status/1/1
+Authorization: Bearer {{token}}
+
+##################################################
+# TOPIC CONTROLLER
+##################################################
+
+### Get Topics by Forum - Page 1
+GET {{API_HostAddress}}/api/topic/1/1
+
+### Get All Topics - Page 1
+GET {{API_HostAddress}}/api/topic/topics/1
+
+### Get Topics by User ID - Page 1 (Authenticated)
+GET {{API_HostAddress}}/api/topic/user/1/1
+Authorization: Bearer {{token}}
+
+### Get Pending Topics - Page 1 (Admin/Moderator only)
+GET {{API_HostAddress}}/api/topic/pending/1
+Authorization: Bearer {{token}}
+
+### Get Single Topic
+GET {{API_HostAddress}}/api/topic/topic/1
+
+### Create Topic (Authenticated)
+POST {{API_HostAddress}}/api/topic/create
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "forumId": 1,
+  "title": "My First Topic",
+  "body": "This is the content of my first topic."
+}
+
+### Update Topic (Authenticated)
+PUT {{API_HostAddress}}/api/topic/update/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "title": "Updated Topic Title",
+  "body": "Updated topic content."
+}
+
+### Delete Topic (Authenticated)
+DELETE {{API_HostAddress}}/api/topic/delete/1
+Authorization: Bearer {{token}}
+
+### Change Topic Status (Admin/Moderator only)
+PATCH {{API_HostAddress}}/api/topic/change-topic-status/1/1
+Authorization: Bearer {{token}}
+
+### Change Topic State (Admin/Moderator only)
+PATCH {{API_HostAddress}}/api/topic/change-topic-state/1/1
+Authorization: Bearer {{token}}
+
+##################################################
+# COMMENT CONTROLLER
+##################################################
+
+### Get All Comments for Topic
+GET {{API_HostAddress}}/api/comment/1
+
+### Get Comments by Page
+GET {{API_HostAddress}}/api/comment/paged/1
+Content-Type: application/json
+
+1
+
+### Create Comment (Authenticated)
+POST {{API_HostAddress}}/api/comment/create
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "topicId": 1,
+  "body": "This is my comment on the topic.",
+  "parentCommentId": null
+}
+
+### Create Reply to Comment (Authenticated)
+POST {{API_HostAddress}}/api/comment/create
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "topicId": 1,
+  "body": "This is a reply to a comment.",
+  "parentCommentId": 1
+}
+
+### Update Comment (Authenticated)
+PUT {{API_HostAddress}}/api/comment/update/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "body": "Updated comment text."
+}
+
+### Delete Comment (Authenticated)
+DELETE {{API_HostAddress}}/api/comment/delete/1
+Authorization: Bearer {{token}}
+
+##################################################
+# REPLY CONTROLLER
+##################################################
+
+### Create Reply (User role required)
+POST {{API_HostAddress}}/api/reply
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "topicId": 1,
+  "body": "This is a reply comment.",
+  "parentCommentId": 1
+}
+
+##################################################
+# UPVOTE CONTROLLER
+##################################################
+
+### Upvote Topic (Authenticated)
+POST {{API_HostAddress}}/api/upvote/1
+Authorization: Bearer {{token}}
+
+##################################################
+# USER CONTROLLER
+##################################################
+
+### Get Users - Page 1 (Admin only)
+GET {{API_HostAddress}}/api/user/users/1
+Authorization: Bearer {{token}}
+
+### Get User Roles (Admin only)
+GET {{API_HostAddress}}/api/user/roles/1
+Authorization: Bearer {{token}}
+
+### Get User with Email (Authenticated)
+GET {{API_HostAddress}}/api/user/with-email/user1@gmail.com
+Authorization: Bearer {{token}}
+
+### Get Authorized User Data (Authenticated)
+GET {{API_HostAddress}}/api/user/with-id/1
+Authorization: Bearer {{token}}
+
+### Update Authorized User Data (Authenticated)
+PUT {{API_HostAddress}}/api/user/with-id/1
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "id": 1,
+  "name": "Updated",
+  "surname": "Name",
+  "username": "updateduser",
+  "email": "updated@example.com",
+  "banned": 0,
+  "roles": ["User"]
+}
+
+### Ban User (Admin only)
+PATCH {{API_HostAddress}}/api/user/1/1
+Authorization: Bearer {{token}}
+
+### Add Moderator Role (Admin only)
+POST {{API_HostAddress}}/api/user/moderator/1
+Authorization: Bearer {{token}}
 
 ###

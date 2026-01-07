@@ -11,16 +11,19 @@ public class TopicConfiguration : IEntityTypeConfiguration<Topic>
         builder.ToTable(nameof(Topic));
         builder.HasKey(t => t.Id);
 
-        builder.HasMany(t=>t.Comments)
-            .WithOne()
-            .HasForeignKey(c=>c.TopicId)
-            .OnDelete(DeleteBehavior.Cascade)
+        builder.Property(t => t.Title)
+            .IsRequired()
+            .HasMaxLength(300);
+
+        builder.Property(t => t.Body)
+            .IsRequired()
+            .HasMaxLength(10000);
+
+        builder.Property(t => t.Created)
             .IsRequired();
 
-        builder.HasMany(u => u.Upvotes)
-            .WithOne(t => t.Topic)
-            .HasForeignKey(t => t.TopicId)
-            .OnDelete(DeleteBehavior.Cascade)
-            .IsRequired();
+        builder.HasIndex(t => t.ForumId);
+        builder.HasIndex(t => t.UserId);
+        builder.HasIndex(t => t.Created);
     }
 }

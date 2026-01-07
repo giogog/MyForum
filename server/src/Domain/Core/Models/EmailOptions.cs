@@ -2,10 +2,10 @@
 
 public class EmailOptions
 {
-    public string MailServer { get; set; }
+    public string MailServer { get; set; } = string.Empty;
     public int MailPort { get; set; }
-    public string SenderName { get; set; }
-    public string FromEmail { get; set; }
-    public string Password { get; set; }
+    public string SenderName { get; set; } = string.Empty;
+    public string FromEmail { get; set; } = string.Empty;
+    public string Password { get; set; } = string.Empty;
 
 }
