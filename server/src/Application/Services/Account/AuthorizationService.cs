@@ -35,7 +35,7 @@ namespace Application.Services
 
             var token = await _tokenGenerator.GenerateToken(user);
 
-            return new LoginResponseDto(user.Id, user.UserName, token);
+            return new LoginResponseDto(user.Id, user.UserName!, token);
         }
 
         public async Task<IdentityResult> Register(RegisterDto registerDto)

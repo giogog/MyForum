@@ -55,7 +55,7 @@ public class EmailService : IEmailService
         var htmlMessage = $"<p>Please confirm your account by <a href='{System.Net.WebUtility.HtmlEncode(callbackUrl)}'>clicking here</a>.</p>" +
             $"<p>If you did not create an account, please ignore this email.</p>";
         
-        return await _emailSender.SendEmailAsync(user.Email, "Confirm your email", htmlMessage);
+        return await _emailSender.SendEmailAsync(user.Email!, "Confirm your email", htmlMessage);
     }
 
 

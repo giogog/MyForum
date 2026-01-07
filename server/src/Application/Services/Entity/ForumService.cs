@@ -19,7 +19,7 @@ public class ForumService:IForumService
     {
         _repositoryManager = repositoryManager;
         _mapper = mapper;
-        _pageSize = Int32.Parse(configuration["ApiSettings:PageSize"]);
+        _pageSize = Int32.Parse(configuration["ApiSettings:PageSize"]!);
         _logger = logger;
 
     }
@@ -37,7 +37,7 @@ public class ForumService:IForumService
                 Title = f.Title,
                 TopicNum = f.TopicNum,
                 UserId = f.UserId,
-                Username = f.User.UserName
+                Username = f.User.UserName!
             })
             .OrderByDescending(f => f.Created);
 
@@ -57,7 +57,7 @@ public class ForumService:IForumService
                 Title = f.Title,
                 TopicNum = f.TopicNum,
                 UserId = f.UserId,
-                Username = f.User.UserName
+                Username = f.User.UserName!
             })
             .OrderByDescending(f => f.State)
             .ThenByDescending(f => f.Created);
@@ -78,7 +78,7 @@ public class ForumService:IForumService
                 Title = f.Title,
                 TopicNum = f.TopicNum,
                 UserId = f.UserId,
-                Username = f.User.UserName
+                Username = f.User.UserName!
             })
             .OrderByDescending(f=>f.State)
             .ThenByDescending(f => f.Created);
@@ -99,7 +99,7 @@ public class ForumService:IForumService
                 Title = f.Title,
                 TopicNum = f.TopicNum,
                 UserId = f.UserId,
-                Username = f.User.UserName
+                Username = f.User.UserName!
             })
             .OrderByDescending(f =>f.Created);
 
@@ -109,10 +109,10 @@ public class ForumService:IForumService
     public async Task CreateForum(int userId, CreateForumDto createForumDto)
     {
         _logger.LogInformation("Creating forum by User {UserId}", userId);
-        var forum = _mapper.Map<Forum>(createForumDto);
+        var forum = _mapper.Map<Forum>(createForumDto)!;
         forum.UserId = userId;
 
-        _repositoryManager.ForumRepository.AddForumAsync(forum);
+        await _repositoryManager.ForumRepository.AddForumAsync(forum);
         await _repositoryManager.SaveAsync();
 
         _logger.LogInformation("Forum created successfully by User {UserId}", userId);

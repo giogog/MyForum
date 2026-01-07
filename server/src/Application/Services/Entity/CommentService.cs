@@ -19,7 +19,7 @@ namespace Application.Services
         {
             _repositoryManager = repositoryManager;
             _mapper = mapper;
-            _pageSize = Int32.Parse(configuration["ApiSettings:CommentPageSize"]);
+            _pageSize = Int32.Parse(configuration["ApiSettings:CommentPageSize"]!);
             _logger = logger;
         }
 
@@ -143,7 +143,7 @@ namespace Application.Services
                     Created = c.Created,
                     Type = c.Type,
                     UserId = c.UserId,
-                    Username = c.User.UserName,
+                    Username = c.User.UserName!,
                     AuthorFullName = $"{c.User.Name} {c.User.Surname}"
                 })
                 .OrderByDescending(c => c.Created);
@@ -166,7 +166,7 @@ namespace Application.Services
                     Created = c.Created,
                     Type = c.Type,
                     UserId = c.UserId,
-                    Username = c.User.UserName,
+                    Username = c.User.UserName!,
                     AuthorFullName = $"{c.User.Name} {c.User.Surname}"
                 })
                 .OrderByDescending(c => c.Created)

@@ -25,15 +25,15 @@ public class TopicRepository(ApplicationDataContext context) : BaseRepository<To
     public IQueryable<Topic> Topics() => FindAll();
 
     public async Task<Topic> GetTopicByIdAsync(int id) => 
-        await FindByCondition(t => t.Id == id)
-            .SingleOrDefaultAsync(); // Don't use AsNoTracking here - may be used for updates
+        (await FindByCondition(t => t.Id == id)
+            .SingleOrDefaultAsync())!; 
 
     public async Task<Topic> GetTopicWithContentByIdAsync(int id) =>
-        await FindByCondition(t => t.Id == id)
+        (await FindByCondition(t => t.Id == id)
             .AsNoTracking() // Read-only query with includes
             .Include(t => t.User)
             .Include(t=>t.Upvotes)
-            .SingleOrDefaultAsync();
+            .SingleOrDefaultAsync())!;
 
     public async Task<IEnumerable<Topic>> GetTopicByUserIdAsync(int userId) => 
         await FindByCondition(t=>t.UserId == userId)

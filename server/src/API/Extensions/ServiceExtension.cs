@@ -28,9 +28,9 @@ namespace API.Extensions
         public static void AddIdentityService(this IServiceCollection services, IConfiguration config)
         {
 
-            var issuer = config.GetValue<string>("ApiSettings:JwtOptions:Issuer");
+            var issuer = config.GetValue<string>("ApiSettings:JwtOptions:Issuer")!;
             var audience = config.GetValue<string>("ApiSettings:JwtOptions:Audience");
-            string TokenKey = config["ApiSettings:JwtOptions:Secret"];
+            string TokenKey = config["ApiSettings:JwtOptions:Secret"]!;
 
 
             services.AddIdentity<User, Role>(option =>

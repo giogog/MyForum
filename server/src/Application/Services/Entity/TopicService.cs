@@ -20,7 +20,7 @@ namespace Application.Services
         {
             _repositoryManager = repositoryManager;
             _mapper = mapper;
-            _pageSize = Int32.Parse(configuration["ApiSettings:PageSize"]);
+            _pageSize = Int32.Parse(configuration["ApiSettings:PageSize"]!);
             _logger = logger;
         }
         public async Task<PagedList<TopicDto>> GetAllTopicsByPage(int page)
@@ -36,7 +36,7 @@ namespace Application.Services
                     UserId = t.UserId,
                     ForumId = t.ForumId,
                     Body = t.Body,
-                    Username = t.User.UserName,
+                    Username = t.User.UserName!,
                     AuthorFullName = $"{t.User.Name} {t.User.Surname}",
                     UpvotesNum = t.UpvotesNum,
                     Created = t.Created,
@@ -62,7 +62,7 @@ namespace Application.Services
                     UserId = t.UserId,
                     ForumId = t.ForumId,
                     Body = t.Body,
-                    Username = t.User.UserName,
+                    Username = t.User.UserName!,
                     AuthorFullName = $"{t.User.Name} {t.User.Surname}",
                     CommentNum = t.CommentNum,
                     UpvotesNum = t.UpvotesNum,
@@ -89,7 +89,7 @@ namespace Application.Services
                     UserId = t.UserId,
                     ForumId = t.ForumId,
                     Body = t.Body,
-                    Username = t.User.UserName,
+                    Username = t.User.UserName!,
                     AuthorFullName = $"{t.User.Name} {t.User.Surname}",
                     ForumTitle = t.Forum.Title,
                     UpvotesNum=t.UpvotesNum,
@@ -116,7 +116,7 @@ namespace Application.Services
                     UserId = t.UserId,
                     ForumId = t.ForumId,
                     Body = t.Body,
-                    Username = t.User.UserName,
+                    Username = t.User.UserName!,
                     AuthorFullName = $"{t.User.Name} {t.User.Surname}",
                     ForumTitle = t.Forum.Title,
                     Created = t.Created,
@@ -152,10 +152,10 @@ namespace Application.Services
                     throw new NotFoundException("Forum not found");
                 _logger.LogInformation("Creating topic by User {UserId}", userId);
 
-                var topic = _mapper.Map<Topic>(createTopicDto);
+                var topic = _mapper.Map<Topic>(createTopicDto)!;
                 topic.UserId = userId;
 
-                _repositoryManager.TopicRepository.AddTopictAsync(topic);
+                await _repositoryManager.TopicRepository.AddTopictAsync(topic);
                 await _repositoryManager.SaveAsync();
 
                 await _repositoryManager.CommitTransactionAsync();

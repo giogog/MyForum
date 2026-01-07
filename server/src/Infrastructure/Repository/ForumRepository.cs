@@ -17,9 +17,9 @@ public class ForumRepository(ApplicationDataContext dataContext) : BaseRepositor
         await FindAll().AsNoTracking().ToArrayAsync();
     
     public async Task<Forum> GetForumByIdAsync(int id) => 
-        await FindByCondition(f=>f.Id==id)
+        (await FindByCondition(f=>f.Id==id)
             .AsNoTracking() // Read-only - use when just reading
-            .SingleOrDefaultAsync(); // Use Single for better performance on unique lookups
+            .SingleOrDefaultAsync())!; // Use Single for better performance on unique lookups
 
     public async Task UpdateForumAsync(Forum forum) => Update(forum);
 }

@@ -7,8 +7,8 @@ namespace API.Controllers;
 [ApiController]
 public class ApiController:ControllerBase
 {
-    private readonly IServiceManager _serviceManager;
-    protected ApiResponse _response;
+    protected readonly IServiceManager _serviceManager;
+    protected ApiResponse _response = new();
     
 
     public ApiController(IServiceManager serviceManager) => _serviceManager = serviceManager;

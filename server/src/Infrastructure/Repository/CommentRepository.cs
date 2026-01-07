@@ -14,8 +14,8 @@ public class CommentRepository(ApplicationDataContext context) : BaseRepository<
     public async Task UpdateCommentAsync(Comment comment) => Update(comment);
 
     public async Task<Comment> GetCommentByIdAsync(int id) => 
-        await FindByCondition(c => c.Id == id)
-            .SingleOrDefaultAsync(); // Don't use AsNoTracking - may be used for updates
+        (await FindByCondition(c => c.Id == id)
+            .SingleOrDefaultAsync())!; // Don't use AsNoTracking - may be used for updates
 
     public async Task<IEnumerable<Comment>> GetCommentsByTopicIdAsync(int topicId) => 
         await FindByCondition(c => c.TopicId == topicId)

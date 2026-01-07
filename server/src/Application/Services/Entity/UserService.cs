@@ -22,7 +22,7 @@ namespace Application.Services
             _repositoryManager = repositoryManager;
             _mapper = mapper;
             _logger = logger;
-            _pageSize = Int32.Parse(configuration["ApiSettings:PageSize"]);
+            _pageSize = Int32.Parse(configuration["ApiSettings:PageSize"]!);
         }
 
         public async Task<PagedList<AuthorizedUserDto>> GetUsers(int page)
@@ -34,10 +34,10 @@ namespace Application.Services
                     t.Id,
                     t.Name, 
                     t.Surname, 
-                    t.UserName,
-                    t.Email,
+                    t.UserName!,
+                    t.Email!,
                     t.Banned,
-                    t.Roles.Select(r=>r.Role.Name).ToArray()));
+                    t.Roles.Select(r=>r.Role.Name!).ToArray()));
 
             return await PagedList<AuthorizedUserDto>.CreateAsync(users,page, _pageSize);
         }
@@ -49,7 +49,7 @@ namespace Application.Services
                 .Where(u=>u.Id==userId)
                 .Select(u => new 
                 {
-                    Roles = u.Roles.Select(ur => ur.Role.Name).ToArray()
+                    Roles = u.Roles.Select(ur => ur.Role.Name!).ToArray()
                 })
                 .SingleOrDefaultAsync();
                 
@@ -83,7 +83,7 @@ namespace Application.Services
                 }
 
                 var checkUser = await _repositoryManager.UserRepository
-                    .GetUser(u => u.UserName.ToLower() == authorizedUserDto.Username.ToLower() && u.UserName != user.UserName);
+                    .GetUser(u => u.UserName!.ToLower() == authorizedUserDto.Username.ToLower() && u.UserName != user.UserName);
                 if (checkUser != null)
                 {
                     _logger.LogWarning("Username {Username} is already taken.", authorizedUserDto.Username);
@@ -156,10 +156,10 @@ namespace Application.Services
                 if (user.Roles.Any(u => u.Role == userRole))
                 {
                     user.SecurityStamp = Guid.NewGuid().ToString();
-                    var deleteRoleresult = await _repositoryManager.UserRepository.DeleteUserRole(user, userRole.Name);
+                    var deleteRoleresult = await _repositoryManager.UserRepository.DeleteUserRole(user, userRole.Name!);
                     if (!deleteRoleresult.Succeeded)
                     {
-                        throw new InvalidArgumentException(deleteRoleresult.Errors.First().ToString());
+                        throw new InvalidArgumentException(deleteRoleresult.Errors.First().ToString()!);
                     }
 
 
@@ -170,7 +170,7 @@ namespace Application.Services
                     var addRoleresult = await _repositoryManager.UserRepository.AddToRole(user, role);
                     if (!addRoleresult.Succeeded)
                     {
-                        throw new InvalidArgumentException(addRoleresult.Errors.First().ToString());
+                        throw new InvalidArgumentException(addRoleresult.Errors.First().ToString()!);
                     }
                 }
 

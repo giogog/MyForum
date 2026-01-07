@@ -13,8 +13,8 @@ public class UpvoteRepository(ApplicationDataContext dataContext) : BaseReposito
     public async Task DeleteUpvoteAsync(Upvote upvote) => Delete(upvote);
 
     public async Task<Upvote> GetUpvote(Expression<Func<Upvote, bool>> expression) => 
-        await FindByCondition(expression)
-            .SingleOrDefaultAsync(); // Don't use AsNoTracking - may be used for delete
+        (await FindByCondition(expression)
+            .SingleOrDefaultAsync())!; // Don't use AsNoTracking - may be used for delete
 
     public async Task<IEnumerable<Upvote>> GetUpvotesByTopicIdAsync(int topicId) => 
         await FindByCondition(u=>u.TopicId == topicId)
