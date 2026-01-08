@@ -26,7 +26,6 @@ public class AccountController(IServiceManager _serviceManager) : ApiController(
 
         if (!registrationCheckUp.Succeeded)
         {
-
             _response = new ApiResponse(registrationCheckUp.Errors.First().Description, false, null, Convert.ToInt32(HttpStatusCode.BadRequest));
             return StatusCode(_response.StatusCode, _response);
         }

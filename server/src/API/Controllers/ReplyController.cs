@@ -20,18 +20,18 @@ public class ReplyController(IServiceManager _serviceManager) : ApiController(_s
     /// <response code="400">Invalid reply data.</response>
     /// <response code="401">Unauthorized - authentication required.</response>
     /// <response code="404">Parent comment not found.</response>
-    [Authorize(Roles = "User")]
+    [Authorize]
     [HttpPost]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ApiResponse>> CreateComment([FromBody] CreateCommentDto commentDto)
+    public async Task<ActionResult<ApiResponse>> CreateReply([FromBody] CreateCommentDto commentDto)
     {
         var user = await _serviceManager.UserService.GetUserWithClaim(User);
         await _serviceManager.CommentService.CreateComment(user.Id, commentDto);
 
-        _response = new ApiResponse("Comment Added Succesfully", true, null, Convert.ToInt32(HttpStatusCode.Created));
+        _response = new ApiResponse("Reply Added Succesfully", true, null, Convert.ToInt32(HttpStatusCode.Created));
         return StatusCode(_response.StatusCode, _response);
 
     }

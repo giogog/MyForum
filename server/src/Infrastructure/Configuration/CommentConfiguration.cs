@@ -21,8 +21,7 @@ public class CommentConfiguration : IEntityTypeConfiguration<Comment>
         builder.HasOne(c => c.Topic)
             .WithMany(t => t.Comments)
             .HasForeignKey(c => c.TopicId)
-            .OnDelete(DeleteBehavior.Cascade)
-            .IsRequired();
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(c => c.ParentComment)
             .WithMany(c => c.Replies)

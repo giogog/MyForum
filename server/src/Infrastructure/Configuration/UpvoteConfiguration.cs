@@ -14,14 +14,12 @@ public class UpvoteConfiguration : IEntityTypeConfiguration<Upvote>
         builder.HasOne(u => u.Topic)
             .WithMany(t => t.Upvotes)
             .HasForeignKey(u => u.TopicId)
-            .OnDelete(DeleteBehavior.Cascade)
-            .IsRequired();
+            .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(u => u.User)
             .WithMany(user => user.Upvotes)
             .HasForeignKey(u => u.UserId)
-            .OnDelete(DeleteBehavior.Restrict)
-            .IsRequired();
+            .OnDelete(DeleteBehavior.Restrict);
 
         // Enforce one upvote per (user, topic).
         builder.HasIndex(u => new { u.UserId, u.TopicId })
