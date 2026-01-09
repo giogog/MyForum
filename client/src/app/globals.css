@@ -97,16 +97,26 @@ html {
     rgba(255, 255, 255, 0.08),
     rgba(255, 255, 255, 0.04)
   );
+  transition: transform 160ms ease, border-color 160ms ease,
+    background 160ms ease, box-shadow 160ms ease;
 }
 
 .navPill:hover {
-  border-color: rgba(143, 0, 255, 0.45);
+  transform: translateY(-1px);
+  border-color: rgba(143, 0, 255, 0.7);
+  background: linear-gradient(
+    180deg,
+    rgba(143, 0, 255, 0.22),
+    rgba(255, 255, 255, 0.06)
+  );
+  box-shadow: 0 0 0 4px rgba(143, 0, 255, 0.12);
 }
 
 .brand {
-  font-size: 18px;
+  display: inline;
+  font-size: 22px;
   font-weight: 700;
-  letter-spacing: 0.6px;
+  letter-spacing: 0.2px;
 }
 
 .brandAccent {

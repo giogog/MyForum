@@ -25,7 +25,7 @@ export default function RootLayout({
           <header className="nav">
             <div className="navInner">
               <Link className="navLink brand" href="/">
-                Ba<span className="brandAccent">asi</span>
+                ba<span className="brandAccent">asi</span>
               </Link>
               <Link className="navLink navPill" href="/login">
                 Sign in
