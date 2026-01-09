@@ -1,6 +1,6 @@
 :root {
-  --bg: #070b1a; /* dark blue */
-  --bg-2: #0b1030; /* supporting blue */
+  --bg: #0a1030; /* dark blue (brighter) */
+  --bg-2: #121a46; /* supporting blue (brighter) */
   --text: #ffffff;
   --muted: rgba(255, 255, 255, 0.72);
   --accent: #8f00ff; /* electric violet */
@@ -20,12 +20,12 @@ body {
   color: var(--text);
   background: radial-gradient(
       1200px 600px at 80% -10%,
-      rgba(143, 0, 255, 0.35),
+      rgba(143, 0, 255, 0.45),
       transparent 60%
     ),
     radial-gradient(
       1000px 500px at 10% 0%,
-      rgba(91, 124, 255, 0.25),
+      rgba(91, 124, 255, 0.34),
       transparent 55%
     ),
     linear-gradient(180deg, var(--bg), var(--bg-2));
@@ -60,7 +60,7 @@ html {
   align-items: center;
   padding: 0 24px;
   border-bottom: 1px solid var(--border);
-  background: rgba(7, 11, 26, 0.55);
+  background: rgba(10, 16, 48, 0.55);
   backdrop-filter: blur(10px);
 }
 

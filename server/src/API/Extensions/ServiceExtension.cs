@@ -92,13 +92,13 @@ namespace API.Extensions
             {
                 options.SwaggerDoc("v1", new OpenApiInfo
                 {
-                    Title = "Forum API",
+                    Title = "Baasi API",
                     Version = "v1",
-                    Description = "A professional forum API with authentication, authorization, and comprehensive features",
+                    Description = "Baasi forum API with authentication, authorization, and core forum features",
                     Contact = new OpenApiContact
                     {
-                        Name = "Forum API Support",
-                        Email = "support@forumapi.com"
+                        Name = "Baasi Support",
+                        Email = "support@baasi.com"
                     }
                 });
 

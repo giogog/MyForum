@@ -24,7 +24,7 @@ export class ApiError extends Error {
   }
 }
 
-const TOKEN_STORAGE_KEY = "myforum.jwt";
+const TOKEN_STORAGE_KEY = "baasi.jwt";
 
 export function getAuthToken(): string | null {
   if (typeof window === "undefined") return null;

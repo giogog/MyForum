@@ -9,8 +9,8 @@ const primaryFont = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "MyForum",
-  description: "MyForum",
+  title: "Baasi",
+  description: "Baasi",
 };
 
 export default function RootLayout({
@@ -24,11 +24,11 @@ export default function RootLayout({
         <div className="appShell">
           <header className="nav">
             <div className="navInner">
+              <Link className="navLink brand" href="/">
+                Ba<span className="brandAccent">asi</span>
+              </Link>
               <Link className="navLink navPill" href="/login">
                 Sign in
-              </Link>
-              <Link className="navLink brand" href="/">
-                My<span className="brandAccent">Forum</span>
               </Link>
             </div>
           </header>
