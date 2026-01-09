@@ -1,8 +1,15 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## API configuration
+
+By default the app expects the API at `https://localhost:5001`.
+
+- Optional: create `client/.env.local` and set `NEXT_PUBLIC_API_BASE_URL`.
+- Example file: [client/.env.example](client/.env.example)
+
 ## Getting Started
 
-First, run the development server:
+First, run the development server (configured for `https://localhost:5003`):
 
 ```bash
 npm run dev
