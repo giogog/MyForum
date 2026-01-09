@@ -2,7 +2,6 @@
 using Domain.Entities;
 using Domain.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
@@ -25,17 +24,6 @@ public class TokenGenerator : ITokenGenerator
 
     }
 
-    public async Task<string> GenerateMailTokenCode(User user)
-    {
-        return await _userManager.GenerateEmailConfirmationTokenAsync(user);
-    }
-
-    public async Task<string> GeneratePasswordResetToken(User user)
-    {
-        return await _userManager.GeneratePasswordResetTokenAsync(user);
-    }
-
-    
     public async Task<string> GenerateToken(User user)
     {
         var claims = new List<Claim>

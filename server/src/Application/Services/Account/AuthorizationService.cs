@@ -1,6 +1,5 @@
 ﻿using Contracts;
 using Domain.Entities;
-using Domain.Exception;
 using Domain.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
@@ -48,6 +47,7 @@ namespace Application.Services
                 {
                     UserName = registerDto.Username,
                     Email = registerDto.Email,
+                    EmailConfirmed = true,
                     Name = registerDto.Name,
                     Surname = registerDto.Surname
                 };
@@ -86,25 +86,19 @@ namespace Application.Services
             if (user == null)
             {
                 _logger.LogWarning("User {Username} does not exist.", loginDto.Username);
-                return IdentityResult.Failed(new IdentityError { Code = "UserDoesNotExist", Description = "The user does not exist." });
+                return IdentityResult.Failed(new IdentityError { Code = "InvalidCredentials", Description = "Invalid username or password." });
             }
 
             var passwordCheck = await _repositoryManager.UserRepository.CheckPassword(user, loginDto.Password);
             if (!passwordCheck)
             {
                 _logger.LogWarning("Incorrect password for user {Username}.", loginDto.Username);
-                return IdentityResult.Failed(new IdentityError { Code = "IncorrectPassword", Description = "Incorrect password." });
-            }
-
-            if (!user.EmailConfirmed)
-            {
-                _logger.LogWarning("Email not confirmed for user {Username}.", loginDto.Username);
-                return IdentityResult.Failed(new IdentityError { Code = "MailIsNotConfirmed", Description = "Please confirm your email." });
+                return IdentityResult.Failed(new IdentityError { Code = "InvalidCredentials", Description = "Invalid username or password." });
             }
             if (user.Banned == Ban.Banned)
             {
                 _logger.LogWarning("{Username} Is banned.", loginDto.Username);
-                return IdentityResult.Failed(new IdentityError { Code = "Ban", Description = "User is banned." });
+                return IdentityResult.Failed(new IdentityError { Code = "InvalidCredentials", Description = "Invalid username or password." });
             }
 
             return IdentityResult.Success;
@@ -148,38 +142,7 @@ namespace Application.Services
             }
         }
 
-        public async Task<IdentityResult> ResetPassword(ResetPasswordDto resetPasswordDto)
-        {
-            await _repositoryManager.BeginTransactionAsync();
 
-            try
-            {
-                var user = await _repositoryManager.UserRepository.GetUser(u => u.Email == resetPasswordDto.Email);
-                if (user == null)
-                {
-                    _logger.LogWarning("User with email {Email} not found.", resetPasswordDto.Email);
-                    await _repositoryManager.RollbackTransactionAsync();
-                    throw new NotFoundException("User not found.");
-                }
-
-                var result = await _repositoryManager.UserRepository.ResetPassword(user, resetPasswordDto.Token, resetPasswordDto.NewPassword);
-                if (!result.Succeeded)
-                {
-                    _logger.LogError("Failed to reset password for user {Email}: {Errors}", resetPasswordDto.Email, result.Errors);
-                    await _repositoryManager.RollbackTransactionAsync();
-                    return result;
-                }
-
-                await _repositoryManager.CommitTransactionAsync();
-                return result;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error occurred while resetting password for user {Email}", resetPasswordDto.Email);
-                await _repositoryManager.RollbackTransactionAsync();
-                throw;
-            }
-        }
 
         private async Task<IdentityResult> AssignRoleToUser(User user, string roleName)
         {

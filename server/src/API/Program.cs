@@ -27,7 +27,7 @@ builder.Services.AddControllers(options =>
 builder.Services.ConfigureCors();
 builder.Services.ConfigurePostgreSql(builder.Configuration);
 builder.ConfigureJwtOptions();
-builder.Services.GeneralConfiguration(builder.Configuration);
+builder.Services.GeneralConfiguration();
 builder.Services.ConfigureAutomapper();
 builder.Services.ConfigureRepositoryManager();
 builder.Services.AddIdentityService(builder.Configuration);

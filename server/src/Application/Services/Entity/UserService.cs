@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Contracts;
 using Domain.Entities;
-using Domain.Exception;
 using Domain.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;

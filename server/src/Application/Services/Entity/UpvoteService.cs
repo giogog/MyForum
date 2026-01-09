@@ -1,6 +1,5 @@
 ﻿using Contracts;
 using Domain.Entities;
-using Domain.Exception;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 

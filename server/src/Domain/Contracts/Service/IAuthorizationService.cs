@@ -13,7 +13,4 @@ public interface IAuthorizationService
     Task<LoginResponseDto> Authenticate(Expression<Func<User, bool>> expression);
     Task<IdentityResult> Register(RegisterDto registerDto);
     Task<IdentityResult> AddNewRole(string role);
-
-    Task<IdentityResult> ResetPassword(ResetPasswordDto resetPasswordDto);
-
 }

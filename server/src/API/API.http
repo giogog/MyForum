@@ -35,28 +35,7 @@ Content-Type: application/json
   "password": "!Ab123123"
 }
 
-### Confirm Email (GET request with query parameters)
-GET {{API_HostAddress}}/api/account/confirm-email?userId=1&token=sample-token
-Accept: application/json
 
-### Resend Confirmation Email
-POST {{API_HostAddress}}/api/account/resend-confirmation/User1
-
-### Request Password Reset
-POST {{API_HostAddress}}/api/account/request-password-reset/user1@gmail.com
-
-### Reset Password Page (Redirect)
-GET {{API_HostAddress}}/api/account/reset-password-page?token=sample-token&email=user1@gmail.com
-
-### Reset Password
-PUT {{API_HostAddress}}/api/account/reset-password
-Content-Type: application/json
-
-{
-  "email": "user1@gmail.com",
-  "token": "sample-token",
-  "newPassword": "NewPassword123!"
-}
 
 ##################################################
 # FORUM CONTROLLER

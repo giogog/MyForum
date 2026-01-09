@@ -5,7 +5,6 @@ using Contracts;
 using Domain.Entities;
 using Domain.Models;
 using Infrastructure.DataConnection;
-using Infrastructure.Email;
 using Infrastructure.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -66,12 +65,9 @@ namespace API.Extensions
                 });
 
         }
-        public static void GeneralConfiguration(this IServiceCollection services, IConfiguration config)
+        public static void GeneralConfiguration(this IServiceCollection services)
         {
-            services.Configure<EmailOptions>(config.GetSection("EmailOptions"));
             services.AddTransient<ITokenGenerator, TokenGenerator>();
-            services.AddScoped<IEmailSender, EmailSender>();
-
         }
 
         public static void ConfigureRepositoryManager(this IServiceCollection services) =>
