@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Space_Grotesk } from "next/font/google";
+import AuthNav from "@/components/AuthNav";
 import "./globals.css";
 
 const primaryFont = Space_Grotesk({
@@ -27,9 +28,7 @@ export default function RootLayout({
               <Link className="navLink brand" href="/">
                 ba<span className="brandAccent">asi</span>
               </Link>
-              <Link className="navLink navPill" href="/login">
-                Sign in
-              </Link>
+              <AuthNav />
             </div>
           </header>
           {children}

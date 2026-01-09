@@ -10,8 +10,8 @@ POST {{API_HostAddress}}/api/account/register
 Content-Type: application/json
 
 {
-  "username": "newuser",
-  "email": "newuser@example.com",
+  "username": "newuser2",
+  "email": "newuser2@example.com",
   "password": "NewUser123!",
   "name": "New",
   "surname": "User"

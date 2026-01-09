@@ -30,7 +30,10 @@ public class AccountController(IServiceManager _serviceManager) : ApiController(
             return StatusCode(_response.StatusCode, _response);
         }
 
-        _response = new ApiResponse("Registration successful.", true, null, Convert.ToInt32(HttpStatusCode.Created));
+        _response = new ApiResponse("Registration successful.", 
+            true,
+            await _serviceManager.AuthorizationService.Authenticate(user => user.UserName == registerDto.Username),
+            Convert.ToInt32(HttpStatusCode.Created));
         return StatusCode(_response.StatusCode, _response);
     }
 

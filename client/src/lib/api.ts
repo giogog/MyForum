@@ -26,19 +26,29 @@ export class ApiError extends Error {
 
 const TOKEN_STORAGE_KEY = "baasi.jwt";
 
+const AUTH_CHANGED_EVENT = "baasi-auth-changed";
+
 export function getAuthToken(): string | null {
   if (typeof window === "undefined") return null;
-  return window.localStorage.getItem(TOKEN_STORAGE_KEY);
+  return window.sessionStorage.getItem(TOKEN_STORAGE_KEY);
 }
 
 export function setAuthToken(token: string): void {
   if (typeof window === "undefined") return;
-  window.localStorage.setItem(TOKEN_STORAGE_KEY, token);
+  window.sessionStorage.setItem(TOKEN_STORAGE_KEY, token);
+  window.dispatchEvent(new Event(AUTH_CHANGED_EVENT));
 }
 
 export function clearAuthToken(): void {
   if (typeof window === "undefined") return;
-  window.localStorage.removeItem(TOKEN_STORAGE_KEY);
+  window.sessionStorage.removeItem(TOKEN_STORAGE_KEY);
+  window.dispatchEvent(new Event(AUTH_CHANGED_EVENT));
+}
+
+export function onAuthChanged(handler: () => void): () => void {
+  if (typeof window === "undefined") return () => {};
+  window.addEventListener(AUTH_CHANGED_EVENT, handler);
+  return () => window.removeEventListener(AUTH_CHANGED_EVENT, handler);
 }
 
 export function getApiBaseUrl(): string {

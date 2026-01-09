@@ -141,7 +141,7 @@ namespace API.Extensions
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowSpecificOrigin",
-                    builder => builder.WithOrigins("https://localhost:5003")
+                    builder => builder.WithOrigins("http://localhost:5003", "https://localhost:5003")
                                       .AllowAnyMethod()
                                       .AllowAnyHeader()
                                       .AllowCredentials());
