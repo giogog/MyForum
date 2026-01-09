@@ -85,7 +85,7 @@ public class AccountController(IServiceManager _serviceManager) : ApiController(
 
         if (!result.Succeeded)
         {
-            return Redirect($"https://localhost:5003/confirmation?errormassage={"Email confirmation Failed"}");
+            return Redirect($"https://localhost:5003/confirmation?errormassage=Email confirmation Failed");
         }
         return Redirect("https://localhost:5003/login");
 
